@@ -68,7 +68,7 @@ const dashboard_home = (_props: { set_section: (s: any) => void }) => {
     const toggle_task = (id: number) => { set_tasks(prev => prev.map(t => t.id === id ? { ...t, done: !t.done } : t)); };
     const delete_task = (id: number, e: any) => { e.stopPropagation(); set_tasks(prev => prev.filter(t => t.id !== id)); };
     const clear_completed = () => { set_tasks(prev => prev.filter(t => !t.done)); };
-    const toggle_wellness = (key: keyof typeof wellness) => { set_wellness(prev => ({ ...prev, [key]: !prev[key] })); };
+    const toggle_wellness = (key: keyof typeof wellness) => { set_wellness((prev: any) => ({ ...prev, [key]: !prev[key] })); };
 
     const handle_send_chat = () => {
         if (!chat_input.trim()) return;

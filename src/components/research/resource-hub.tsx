@@ -13,19 +13,15 @@ import {
   Globe,
   FileText,
   Zap,
-  CheckCircle,
   Lock,
   Unlock,
   Grid,
   List,
   ChevronDown,
-  Tag,
-  Users,
-  TrendingUp
+  Users
 } from 'lucide-react';
 import {
   academicResources,
-  getResourcesByCategory,
   getOpenAccessResources,
   searchResources,
   categoryLabels,

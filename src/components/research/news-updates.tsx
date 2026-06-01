@@ -1,23 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import {
   Newspaper,
-  Clock,
   ExternalLink,
   TrendingUp,
-  Filter,
   RefreshCw,
   Bookmark,
   Share2,
-  Eye,
-  Calendar,
-  Tag,
   Globe,
   Loader2,
   AlertCircle,
   Star,
   ChevronRight
 } from 'lucide-react';
-import { researchAPI, type NewsArticle, formatDate, getTimeAgo } from '../../services/research-api';
+import { researchAPI, type NewsArticle, getTimeAgo } from '../../services/research-api';
 
 interface NewsUpdatesProps {
   className?: string;
