@@ -44,56 +44,63 @@ const get_accent = (theme: string): [number, number, number] => {
 const M = 15; // margin
 
 function draw_header(doc: jsPDF, pw: number, accent: [number, number, number], title: string, subtitle: string) {
-  // Top accent bar
-  doc.setFillColor(...accent);
-  doc.rect(0, 0, pw, 4, 'F');
-
-  // Left accent stripe
-  doc.setFillColor(...accent);
-  doc.rect(0, 4, 2.5, 50, 'F');
-
-  // Logo image
+  // Ultra-minimalist header
+  
+  // Logo image - scaled beautifully
   try {
-    doc.addImage(TASKLET_LOGO_BASE64, 'PNG', M, 8, 14, 14);
+    doc.addImage(TASKLET_LOGO_BASE64, 'PNG', M, 10, 11, 11);
   } catch (_) { /* fallback if logo fails */ }
 
   // Brand text next to logo
-  doc.setFontSize(9);
+  doc.setFontSize(8);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(...C.deep);
-  doc.text('TASKLET', M + 16, 14);
-  doc.setFontSize(5);
+  doc.text('TASKLET', M + 14, 14);
+  
+  doc.setFontSize(4.5);
   doc.setTextColor(...C.steel);
-  doc.text('STUDY TEMPLATE', M + 16, 18);
+  // Replaced "STUDY TEMPLATE" to fit a more premium workspace tone
+  doc.text('ACADEMIC ESSENTIAL', M + 14, 18);
 
-  // Date field on right
+  // Focus Badge on the right
   doc.setFontSize(6.5);
-  doc.setTextColor(...C.muted);
-  doc.text('Name: ________________________________', pw - M, 11, { align: 'right' });
-  doc.text('Date: _____ / _____ / _____', pw - M, 16, { align: 'right' });
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...accent);
+  const badgeText = subtitle.toUpperCase();
+  const badgeW = doc.getTextWidth(badgeText) + 8;
+  // Very subtle background badge for subtitle
+  doc.setFillColor(...C.cloud);
+  doc.roundedRect(pw - M - badgeW, 11, badgeW, 7, 1, 1, 'F');
+  doc.text(badgeText, pw - M - badgeW + 4, 16);
 
-  // Divider
-  doc.setDrawColor(...C.deep);
-  doc.setLineWidth(0.6);
-  doc.line(M, 25, pw - M, 25);
-  doc.setDrawColor(...accent);
-  doc.setLineWidth(0.25);
-  doc.line(M, 26, pw - M, 26);
-
-  // Title
-  doc.setFontSize(18);
+  // Document Title (Left, prominent & clean)
+  doc.setFontSize(22);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(...C.deep);
-  doc.text(title.toUpperCase(), M, 34);
+  doc.text(title, M, 34);
 
-  // Subtitle badge
+  // Name & Date form fields (Right, aligned cleanly)
+  doc.setFontSize(6);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(...C.muted);
+  doc.text('Name:', pw - M - 65, 29);
+  doc.setDrawColor(...C.line);
+  doc.setLineWidth(0.15);
+  doc.line(pw - M - 52, 29, pw - M, 29);
+
+  doc.text('Date:', pw - M - 65, 35);
+  doc.line(pw - M - 52, 35, pw - M, 35);
+
+  // Sleek minimalist structural divider
+  doc.setDrawColor(...C.line);
+  doc.setLineWidth(0.2);
+  doc.line(M, 42, pw - M, 42);
+  
+  // Highlighting accent dot/line that grounds the title
   doc.setFillColor(...accent);
-  doc.roundedRect(M, 36, doc.getTextWidth(subtitle) * 0.45 + 8, 5.5, 1.2, 1.2, 'F');
-  doc.setFontSize(5);
-  doc.setTextColor(...C.white);
-  doc.text(subtitle.toUpperCase(), M + 4, 40);
+  doc.rect(M, 41.5, 14, 1, 'F');
 
-  return 48; // return y position after header
+  return 52; // clean y position return after header
 }
 
 function draw_footer(doc: jsPDF, pw: number, ph: number, accent: [number, number, number], label: string) {
@@ -117,27 +124,25 @@ function draw_footer(doc: jsPDF, pw: number, ph: number, accent: [number, number
 }
 
 function draw_section_title(doc: jsPDF, y: number, title: string, accent: [number, number, number]) {
+  // Minimalist accent bar instead of heavy box
   doc.setFillColor(...accent);
-  doc.roundedRect(M, y, 5.5, 5.5, 1, 1, 'F');
-  
-  // Draw a white circle inside instead of using a special text character
-  doc.setFillColor(...C.white);
-  doc.circle(M + 2.75, y + 2.75, 1, 'F');
+  doc.rect(M, y - 0.5, 1.5, 5.5, 'F');
 
   doc.setFontSize(7.5);
+  doc.setFont('helvetica', 'bold');
   doc.setTextColor(...C.deep);
-  doc.text(title.toUpperCase(), M + 8, y + 4);
+  doc.text(title.toUpperCase(), M + 4, y + 4);
   return y + 8;
 }
 
 function draw_lined_box(doc: jsPDF, x: number, y: number, w: number, h: number, line_spacing = 6.5) {
-  doc.setFillColor(...C.cloud);
+  // Pure, airy minimalist border mapping
   doc.setDrawColor(...C.line);
-  doc.setLineWidth(0.2);
-  doc.roundedRect(x, y, w, h, 2, 2, 'FD');
+  doc.setLineWidth(0.15);
+  doc.roundedRect(x, y, w, h, 1.5, 1.5, 'S');
 
   doc.setDrawColor(...C.line_lt);
-  doc.setLineWidth(0.12);
+  doc.setLineWidth(0.1);
   const count = Math.floor((h - 6) / line_spacing);
   for (let i = 1; i <= count; i++) {
     doc.line(x + 3, y + 3 + i * line_spacing, x + w - 3, y + 3 + i * line_spacing);
@@ -172,43 +177,34 @@ function layout_daily(doc: jsPDF, planner: planner_item, pw: number, ph: number,
   let y = draw_header(doc, pw, accent, planner.title, 'Daily Schedule');
   const cw = pw - M * 2; // content width
 
-  // ── LEFT COLUMN (schedule) + RIGHT COLUMN (priorities/notes)
-  const col_left_w = cw * 0.58;
-  const col_right_w = cw * 0.38;
-  const col_right_x = M + col_left_w + cw * 0.04;
+  // ── Column dimensions
+  const col_left_w = cw * 0.56;
+  const col_gap = cw * 0.04;
+  const col_right_w = cw - col_left_w - col_gap;
+  const col_right_x = M + col_left_w + col_gap;
 
-  // -- TOP 3 PRIORITIES (right column top)
-  y = draw_section_title(doc, y, 'Top 3 Priorities', accent);
-  const pri_y = y;
-  for (let i = 0; i < 3; i++) {
-    const py = pri_y + i * 10;
-    doc.setFillColor(...accent);
-    doc.circle(col_right_x + 2.5, py + 2.5, 2.5, 'F');
-    doc.setFontSize(7);
-    doc.setFont('helvetica', 'bold');
-    doc.setTextColor(...C.white);
-    doc.text(String(i + 1), col_right_x + 1.5, py + 4);
+  // ══════════════════════════════════════════════
+  //  LEFT COLUMN: Schedule
+  // ══════════════════════════════════════════════
 
-    doc.setDrawColor(...C.line);
-    doc.setLineWidth(0.15);
-    doc.line(col_right_x + 7, py + 4, col_right_x + col_right_w, py + 4);
-  }
-
-  // -- TIME BLOCKS (left column)
-  const schedule_label_y = y;
+  // Schedule section label
+  doc.setFillColor(...accent);
+  doc.rect(M, y - 0.5, 1.5, 5.5, 'F');
   doc.setFontSize(7.5);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(...C.deep);
-  doc.text('SCHEDULE', M, schedule_label_y - 1);
+  doc.text('SCHEDULE', M + 4, y + 4);
+
+  const schedule_y = y + 10;
 
   const hours = ['6:00 AM','7:00 AM','8:00 AM','9:00 AM','10:00 AM','11:00 AM','12:00 PM',
                  '1:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM','7:00 PM',
                  '8:00 PM','9:00 PM','10:00 PM'];
   
-  const row_h = Math.min(10, (ph - y - 80) / hours.length);
+  const row_h = Math.min(12, (ph - schedule_y - 30) / hours.length);
 
   hours.forEach((hour, i) => {
-    const ry = y + i * row_h;
+    const ry = schedule_y + i * row_h;
     
     // Alternate row fill
     if (i % 2 === 0) {
@@ -225,41 +221,72 @@ function layout_daily(doc: jsPDF, planner: planner_item, pw: number, ph: number,
     doc.setFontSize(5.5);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...C.steel);
-    doc.text(hour, M + 1, ry + row_h * 0.65);
+    doc.text(hour, M + 1.5, ry + row_h * 0.6);
 
     // Divider between time and content
     doc.setDrawColor(...C.line);
     doc.setLineWidth(0.15);
-    doc.line(M + 18, ry, M + 18, ry + row_h);
+    doc.line(M + 20, ry, M + 20, ry + row_h);
   });
 
   // Border around schedule
   doc.setDrawColor(...C.line);
-  doc.setLineWidth(0.25);
-  doc.roundedRect(M, y, col_left_w, hours.length * row_h, 1.5, 1.5, 'S');
+  doc.setLineWidth(0.2);
+  doc.roundedRect(M, schedule_y, col_left_w, hours.length * row_h, 1.5, 1.5, 'S');
+
+  // ══════════════════════════════════════════════
+  //  RIGHT COLUMN: Priorities, Goals, Notes
+  // ══════════════════════════════════════════════
+
+  // -- TOP 3 PRIORITIES heading (right column)
+  doc.setFillColor(...accent);
+  doc.rect(col_right_x, y - 0.5, 1.5, 5.5, 'F');
+  doc.setFontSize(7.5);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...C.deep);
+  doc.text('TOP 3 PRIORITIES', col_right_x + 4, y + 4);
+
+  const pri_y = y + 10;
+  for (let i = 0; i < 3; i++) {
+    const py = pri_y + i * 11;
+    doc.setFillColor(...accent);
+    doc.circle(col_right_x + 2.5, py + 2.5, 2.5, 'F');
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...C.white);
+    doc.text(String(i + 1), col_right_x + 1.5, py + 4);
+
+    doc.setDrawColor(...C.line);
+    doc.setLineWidth(0.15);
+    doc.line(col_right_x + 7, py + 4, col_right_x + col_right_w, py + 4);
+  }
 
   // -- DAILY GOALS (right column middle)
-  const goals_y = pri_y + 35;
-  doc.setFontSize(7);
+  const goals_y = pri_y + 40;
+  doc.setFillColor(...accent);
+  doc.rect(col_right_x, goals_y - 0.5, 1.5, 5.5, 'F');
+  doc.setFontSize(7.5);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(...C.deep);
-  doc.text('DAILY GOALS', col_right_x, goals_y);
+  doc.text('DAILY GOALS', col_right_x + 4, goals_y + 4);
 
-  draw_lined_box(doc, col_right_x, goals_y + 3, col_right_w, 40);
+  draw_lined_box(doc, col_right_x, goals_y + 8, col_right_w, 45);
 
   // -- NOTES / REFLECTION (right column bottom)
-  const notes_y = goals_y + 48;
-  doc.setFontSize(7);
+  const notes_y = goals_y + 58;
+  doc.setFillColor(...accent);
+  doc.rect(col_right_x, notes_y - 0.5, 1.5, 5.5, 'F');
+  doc.setFontSize(7.5);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(...C.deep);
-  doc.text('REFLECTION & NOTES', col_right_x, notes_y);
+  doc.text('REFLECTION & NOTES', col_right_x + 4, notes_y + 4);
 
-  const notes_h = Math.max(30, y + hours.length * row_h - notes_y - 5);
-  draw_lined_box(doc, col_right_x, notes_y + 3, col_right_w, notes_h);
+  const notes_h = Math.max(30, schedule_y + hours.length * row_h - notes_y - 12);
+  draw_lined_box(doc, col_right_x, notes_y + 8, col_right_w, notes_h);
 
-  // -- WATER TRACKER (bottom)
-  const water_y = y + hours.length * row_h + 6;
-  if (water_y + 16 < ph - 18) {
+  // -- WATER TRACKER (bottom, spanning full width)
+  const water_y = schedule_y + hours.length * row_h + 6;
+  if (water_y + 14 < ph - 16) {
     doc.setFontSize(6);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(...C.steel);
@@ -270,7 +297,6 @@ function layout_daily(doc: jsPDF, planner: planner_item, pw: number, ph: number,
       doc.setFillColor(...C.white);
       doc.setLineWidth(0.2);
       doc.circle(M + 28 + i * 9, water_y + 1.5, 3, 'FD');
-      // Adding a small blue inner circle instead of an emoji
       doc.setFillColor(150, 190, 220);
       doc.circle(M + 28 + i * 9, water_y + 1.5, 1.5, 'F');
     }
@@ -858,7 +884,7 @@ function layout_generic(doc: jsPDF, planner: planner_item, pw: number, ph: numbe
 // ═══════════════════════════════════════════════════════════════════
 //  PUBLIC API: generate_pdf
 // ═══════════════════════════════════════════════════════════════════
-export const generate_pdf = (planner: planner_item, size_key: paper_size_key) => {
+export const generate_pdf = (planner: planner_item, size_key: paper_size_key, preview_only: boolean = false): string | void => {
   const paper = PAPER[size_key] || PAPER['A4'];
   const accent = get_accent(planner.color_theme);
   const pw = paper.w;
@@ -879,6 +905,10 @@ export const generate_pdf = (planner: planner_item, size_key: paper_size_key) =>
   const render = layout_map[planner.id] || layout_generic;
   render(doc, planner, pw, ph, accent);
   draw_footer(doc, pw, ph, accent, `${planner.title} • ${paper.label}`);
+
+  if (preview_only) {
+    return doc.output('datauristring');
+  }
 
   doc.save(`${planner.title.toLowerCase().replace(/\s+/g, '-')}-${size_key.toLowerCase()}.pdf`);
 };
@@ -1107,9 +1137,9 @@ export const generate_lecture_pdf = (subject: any) => {
   const pageCount = (doc as any).internal.getNumberOfPages();
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
-    doc.setFontSize(7);
+    doc.setFontSize(6);
     doc.setTextColor(190, 198, 210);
-    doc.text(`TASKLET Learnify • PAGE ${i} OF ${pageCount}`, pw / 2, ph - 10, { align: 'center' });
+    doc.text(`TASKLET ACADEMIC ESSENTIAL • PAGE ${i} OF ${pageCount}`, pw / 2, ph - 10, { align: 'center' });
   }
 
   doc.save(`Tasklet-Lecture-${subject.title.toLowerCase().replace(/\s+/g, '-')}.pdf`);

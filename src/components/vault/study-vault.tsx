@@ -84,7 +84,7 @@ const study_vault = () => {
     const [search_query, set_search_query] = useState('');
     const [selected_subject, set_selected_subject] = useState<subject_item | null>(null);
     const [current_topic_idx, set_current_topic_idx] = useState(0);
-    const [sidebar_open, set_sidebar_open] = useState(true);
+    const [sidebar_open, set_sidebar_open] = useState(typeof window !== 'undefined' && window.innerWidth >= 768);
 
     // Load state from localStorage on component mount
     useEffect(() => {
@@ -147,6 +147,8 @@ const study_vault = () => {
     };
 
     const open_notebook = (subj: subject_item) => {
+        // Close sidebar on mobile when opening a new notebook
+        if (typeof window !== 'undefined' && window.innerWidth < 768) set_sidebar_open(false);
         set_selected_subject(subj);
         set_current_topic_idx(0);
     };
@@ -247,62 +249,52 @@ const study_vault = () => {
         selected_subject && createElement('div', {
             className: 'fixed inset-0 z-[200] bg-white flex flex-col animate-fade-in'
         },
-            // Top toolbar — navigation + highlight tools
-            createElement('div', { className: 'w-full bg-[#F8FAFC] border-b-2 border-[#E2E8F0] py-2 md:py-3 px-3 md:px-6 flex flex-wrap justify-between items-center shrink-0 shadow-sm gap-2' },
-                createElement('div', { className: 'flex items-center gap-2 md:gap-3 flex-wrap' },
-                    // Mobile hamburger menu button
+            // Top toolbar — restructured for mobile
+            createElement('div', { className: 'w-full bg-[#F8FAFC] border-b-2 border-[#E2E8F0] shrink-0 shadow-sm' },
+                // Row 1: Hamburger + Back + Title
+                createElement('div', { className: 'flex items-center gap-2 px-3 md:px-6 pt-2 md:pt-3 pb-1.5' },
                     createElement('button', {
                         onClick: () => set_sidebar_open(!sidebar_open),
-                        className: 'md:hidden p-2 bg-white border-2 border-[#E2E8F0] hover:border-[#3B82F6] text-[#64748B] hover:text-[#3B82F6] rounded-lg transition-all duration-200'
+                        className: `p-2 bg-white border-2 border-[#E2E8F0] hover:border-[#3B82F6] text-[#64748B] hover:text-[#3B82F6] rounded-lg transition-all duration-200 shrink-0 ${sidebar_open ? 'md:hidden' : ''}`
                     },
-                        createElement('svg', {
-                            className: 'w-4 h-4',
-                            fill: 'none',
-                            stroke: 'currentColor',
-                            viewBox: '0 0 24 24'
-                        },
-                            createElement('path', {
-                                strokeLinecap: 'round',
-                                strokeLinejoin: 'round',
-                                strokeWidth: 2,
-                                d: sidebar_open ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'
-                            })
+                        createElement('svg', { className: 'w-4 h-4', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
+                            createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: sidebar_open ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16' })
                         )
                     ),
                     createElement('button', {
                         onClick: () => set_selected_subject(null),
-                        className: 'px-3 py-1.5 md:px-4 md:py-2 bg-white border-2 border-[#E2E8F0] hover:bg-[#FEE2E2] hover:border-[#FCA5A5] hover:text-[#DC2626] text-[#64748B] text-[10px] font-black uppercase tracking-widest rounded transition-colors'
-                    }, '← Back to Shelf'),
-                    createElement('div', { className: 'flex flex-col' },
-                        createElement('span', { className: 'text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest' }, active_level === 'elementary' ? 'Elementary' : 'High School'),
-                        createElement('h2', { className: 'text-lg font-black font-serif text-[#0F172A]' }, selected_subject.title)
-                    ),
-                    // Divider
-                    createElement('div', { className: 'hidden lg:block w-px h-8 bg-[#E2E8F0] mx-2' }),
-                    // Highlight tools inline
-                    createElement(VaultScratchpad, { key: 'scratchpad-toolbar' })
+                        className: 'px-3 py-1.5 bg-white border-2 border-[#E2E8F0] hover:bg-[#FEE2E2] hover:border-[#FCA5A5] hover:text-[#DC2626] text-[#64748B] text-[10px] font-black uppercase tracking-widest rounded transition-colors shrink-0'
+                    }, '← Back'),
+                    createElement('div', { className: 'flex flex-col min-w-0 flex-1' },
+                        createElement('span', { className: 'text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest truncate' }, active_level === 'elementary' ? 'Elementary' : 'High School'),
+                        createElement('h2', { className: 'text-sm md:text-lg font-black font-serif text-[#0F172A] truncate' }, selected_subject.title)
+                    )
                 ),
-                createElement('div', { className: 'flex gap-2' },
-                    createElement('button', {
-                        onClick: () => subj_idx > 0 && open_notebook(level_subjects[subj_idx - 1]),
-                        disabled: subj_idx <= 0,
-                        className: 'px-4 py-2 bg-white border-2 border-[#E2E8F0] hover:bg-[#F1F5F9] text-[#0F172A] disabled:opacity-30 rounded text-xs font-bold'
-                    }, '← Prev Subject'),
-                    createElement('button', {
-                        onClick: () => generate_lecture_pdf(selected_subject),
-                        className: 'px-4 py-2 bg-[#3B82F6] hover:bg-[#2563EB] text-white rounded text-xs font-bold'
-                    }, 'Save PDF'),
-                    createElement('button', {
-                        onClick: () => subj_idx < level_subjects.length - 1 && open_notebook(level_subjects[subj_idx + 1]),
-                        disabled: subj_idx >= level_subjects.length - 1,
-                        className: 'px-4 py-2 bg-white border-2 border-[#E2E8F0] hover:bg-[#F1F5F9] text-[#0F172A] disabled:opacity-30 rounded text-xs font-bold'
-                    }, 'Next Subject →')
+                // Row 2: Scratchpad tools + Subject nav
+                createElement('div', { className: 'flex items-center justify-between gap-2 px-3 md:px-6 pb-2 md:pb-3 overflow-x-auto no-scrollbar' },
+                    createElement(VaultScratchpad, { key: 'scratchpad-toolbar' }),
+                    createElement('div', { className: 'flex gap-1.5 shrink-0' },
+                        createElement('button', {
+                            onClick: () => subj_idx > 0 && open_notebook(level_subjects[subj_idx - 1]),
+                            disabled: subj_idx <= 0,
+                            className: 'px-2.5 md:px-4 py-1.5 bg-white border-2 border-[#E2E8F0] hover:bg-[#F1F5F9] text-[#0F172A] disabled:opacity-30 rounded text-[10px] md:text-xs font-bold shrink-0'
+                        }, '← Prev'),
+                        createElement('button', {
+                            onClick: () => generate_lecture_pdf(selected_subject),
+                            className: 'px-2.5 md:px-4 py-1.5 bg-[#3B82F6] hover:bg-[#2563EB] text-white rounded text-[10px] md:text-xs font-bold shrink-0'
+                        }, 'PDF'),
+                        createElement('button', {
+                            onClick: () => subj_idx < level_subjects.length - 1 && open_notebook(level_subjects[subj_idx + 1]),
+                            disabled: subj_idx >= level_subjects.length - 1,
+                            className: 'px-2.5 md:px-4 py-1.5 bg-white border-2 border-[#E2E8F0] hover:bg-[#F1F5F9] text-[#0F172A] disabled:opacity-30 rounded text-[10px] md:text-xs font-bold shrink-0'
+                        }, 'Next →')
+                    )
                 )
             ),
 
-            // Mobile sidebar overlay
+            // Mobile sidebar backdrop
             sidebar_open && createElement('div', {
-                className: 'fixed inset-0 bg-black/20 z-30 md:hidden',
+                className: 'fixed inset-0 bg-black/40 z-[210] md:hidden',
                 onClick: () => set_sidebar_open(false)
             }),
 
@@ -311,10 +303,10 @@ const study_vault = () => {
 
                 // Left: Table of Contents (now mobile-responsive collapsible)
                 createElement('div', { 
-                    className: `flex flex-col bg-gradient-to-br from-[#F8FAFC] via-[#F1F5F9] to-[#E2E8F0] border-r-2 border-[#CBD5E1] shrink-0 relative overflow-hidden transition-all duration-300 z-40 ${
+                    className: `flex flex-col bg-gradient-to-br from-[#F8FAFC] via-[#F1F5F9] to-[#E2E8F0] border-[#CBD5E1] shrink-0 relative overflow-hidden transition-all duration-300 ${
                         sidebar_open 
-                            ? 'w-full md:w-56 lg:w-72 translate-x-0 fixed md:relative h-full md:h-auto top-0 left-0' 
-                            : 'w-0 -translate-x-full hidden'
+                            ? 'fixed md:relative z-[220] md:z-auto top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-[360px] max-h-[80vh] md:max-w-none md:max-h-none md:top-auto md:left-auto md:translate-x-0 md:translate-y-0 md:w-56 lg:w-72 md:h-auto rounded-[2rem] md:rounded-none border-4 md:border-0 md:border-r-2 shadow-[0_30px_60px_rgba(0,0,0,0.4)] md:shadow-none' 
+                            : 'hidden md:flex md:w-0 md:-translate-x-full md:border-r-2'
                     }`
                 },
                     // Background decoration
@@ -322,7 +314,7 @@ const study_vault = () => {
                     createElement('div', { className: 'absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-[#8B5CF6]/5 to-transparent rounded-full translate-y-12 -translate-x-12' }),
                     
                     // Header with enhanced styling
-                    createElement('div', { className: 'relative z-10 mb-6' },
+                    createElement('div', { className: 'relative z-10 p-3 md:p-4 lg:p-6 pb-2' },
                         createElement('div', { className: 'flex items-center justify-between mb-2' },
                             createElement('div', { className: 'flex items-center gap-2' },
                                 createElement('div', { className: 'w-2 h-2 bg-[#3B82F6] rounded-full animate-pulse' }),
@@ -330,25 +322,12 @@ const study_vault = () => {
                                     'Table of Contents'
                                 )
                             ),
-                            // Toggle button inside header
                             createElement('button', {
-                                onClick: () => set_sidebar_open(!sidebar_open),
-                                className: 'bg-white/80 hover:bg-white border border-[#CBD5E1] hover:border-[#3B82F6] rounded-md p-1 transition-all duration-200 group'
+                                onClick: () => set_sidebar_open(false),
+                                className: 'bg-white/80 hover:bg-white border border-[#CBD5E1] hover:border-[#3B82F6] rounded-md p-1.5 transition-all duration-200 group'
                             },
-                                createElement('div', { className: `w-3 h-3 flex items-center justify-center transition-transform duration-300 ${sidebar_open ? '' : 'rotate-180'}` },
-                                    createElement('svg', { 
-                                        className: 'w-2.5 h-2.5 text-[#374151] group-hover:text-[#3B82F6]',
-                                        fill: 'none',
-                                        stroke: 'currentColor',
-                                        viewBox: '0 0 24 24'
-                                    },
-                                        createElement('path', { 
-                                            strokeLinecap: 'round',
-                                            strokeLinejoin: 'round',
-                                            strokeWidth: 2,
-                                            d: 'M15 19l-7-7 7-7'
-                                        })
-                                    )
+                                createElement('svg', { className: 'w-3 h-3 text-[#374151] group-hover:text-[#3B82F6]', fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' },
+                                    createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2, d: 'M6 18L18 6M6 6l12 12' })
                                 )
                             )
                         ),
@@ -361,9 +340,9 @@ const study_vault = () => {
                         )
                     ),
                     
-                    // Mobile-enhanced sidebar header and padding
-                    createElement('div', { className: 'p-3 md:p-4 lg:p-6' },
-                    createElement('div', { className: 'flex-1 overflow-y-auto space-y-2 custom-scrollbar pr-2 pl-2 relative z-10' },
+                    // Topic list with scroll
+                    createElement('div', { className: 'flex-1 flex flex-col overflow-hidden px-3 md:px-4 lg:px-6' },
+                    createElement('div', { className: 'flex-1 overflow-y-auto space-y-2 custom-scrollbar pr-1 relative z-10' },
                         selected_subject.topics.map((topic, idx) =>
                             createElement('div', {
                                 key: idx,
@@ -380,10 +359,13 @@ const study_vault = () => {
                                 
                                 // Topic button with enhanced styling
                                 createElement('button', {
-                                    onClick: () => set_current_topic_idx(idx),
+                                    onClick: () => {
+                                        set_current_topic_idx(idx);
+                                        if (typeof window !== 'undefined' && window.innerWidth < 768) set_sidebar_open(false);
+                                    },
                                     className: `w-full text-left pl-12 pr-4 py-3 rounded-xl transition-all duration-200 text-[11px] font-semibold relative overflow-hidden group ${
                                         current_topic_idx === idx
-                                            ? 'bg-white border-2 border-[#3B82F6] text-[#0F172A] shadow-lg transform scale-[1.02]'
+                                            ? 'bg-white border-2 border-[#3B82F6] text-[#0F172A] shadow-lg translate-x-1'
                                             : 'border-2 border-transparent hover:bg-white/70 hover:border-[#CBD5E1] text-[#1F2937] hover:text-[#0F172A] hover:shadow-md'
                                     }`
                                 },
@@ -441,36 +423,13 @@ const study_vault = () => {
                             )
                         )
                     )
+                )
                 ),
 
-                                // Right: Note content on cream paper
                                 createElement('div', { 
-                                    className: `flex-1 bg-[#F5F3EC] overflow-y-auto relative text-[#1E293B] custom-scrollbar selection:bg-[#FDE047] selection:text-[#1E293B] transition-all duration-300 ${
-                                        sidebar_open ? 'p-6 md:p-12 xl:p-16' : 'p-4 md:p-8 xl:p-12'
-                                    }`
+                                    className: `flex-1 bg-[#F5F3EC] overflow-y-auto relative text-[#1E293B] custom-scrollbar selection:bg-[#FDE047] selection:text-[#1E293B] transition-all duration-300 p-4 md:p-8 xl:p-16`
                                 },
-                                    // Toggle button when sidebar is closed - always visible
-                                    !sidebar_open && createElement('button', {
-                                        onClick: () => set_sidebar_open(true),
-                                        className: 'fixed top-20 left-4 z-20 bg-white border-2 border-[#CBD5E1] hover:border-[#3B82F6] rounded-lg p-2 shadow-lg transition-all duration-300 hover:shadow-xl group'
-                                    },
-                                        createElement('div', { className: 'w-4 h-4 flex items-center justify-center' },
-                                            createElement('svg', { 
-                                                className: 'w-3 h-3 text-[#374151] group-hover:text-[#3B82F6]',
-                                                fill: 'none',
-                                                stroke: 'currentColor',
-                                                viewBox: '0 0 24 24'
-                                            },
-                                                createElement('path', { 
-                                                    strokeLinecap: 'round',
-                                                    strokeLinejoin: 'round',
-                                                    strokeWidth: 2,
-                                                    d: 'M9 5l7 7-7 7'
-                                                })
-                                            )
-                                        )
-                                    ),
-                                    createElement('div', { className: `max-w-none mx-auto relative z-10 ${sidebar_open ? 'max-w-[72rem]' : 'max-w-full'}` },
+                                    createElement('div', { className: 'max-w-[72rem] mx-auto relative z-10' },
 
                                         current_topic && createElement('div', { className: 'animate-fade-in' },
                                             // Topic header
