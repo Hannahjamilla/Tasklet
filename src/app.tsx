@@ -40,15 +40,15 @@ const app_shell = (props: {
     createElement('div', { className: 'fixed -bottom-20 -right-20 w-80 h-80 bg-tasklet-softpink rounded-full blur-[100px] pointer-events-none animate-bounce-slow' }),
     createElement('div', { className: 'fixed top-20 -left-20 w-80 h-80 bg-tasklet-softblue rounded-full blur-[100px] pointer-events-none animate-float-slow' }),
 
-    // FRIENDLY SIDEBAR
-    createElement('nav', { className: 'fixed left-0 top-0 w-20 md:w-64 h-screen bg-[#F8FAFC] flex flex-col z-50 overflow-y-auto overflow-x-hidden no-scrollbar shadow-xl transition-all duration-500 group/nav' },
+    // FRIENDLY SIDEBAR (Bottom on mobile)
+    createElement('nav', { className: 'fixed left-0 bottom-0 md:top-0 w-full h-16 md:w-64 md:h-screen bg-[#F8FAFC] flex flex-row md:flex-col z-50 overflow-x-auto overflow-y-hidden md:overflow-y-auto md:overflow-x-hidden no-scrollbar shadow-[0_-5px_20px_rgba(0,0,0,0.05)] md:shadow-xl transition-all duration-500 group/nav items-center md:items-stretch' },
 
-      // Top Architectural Accent (Smoothed)
-      createElement('div', { className: 'h-1.5 w-full bg-[#1E293B]/10' }),
+      // Top Architectural Accent (Smoothed) - Desktop only
+      createElement('div', { className: 'hidden md:block h-1.5 w-full bg-[#1E293B]/10' }),
 
-      // Logo Area (Fun)
+      // Logo Area (Fun) - Desktop only
       createElement('div', {
-        className: 'p-8 pb-10 flex flex-col items-center md:items-start transition-all duration-500',
+        className: 'hidden md:flex p-8 pb-10 flex-col items-center md:items-start transition-all duration-500',
       },
         createElement('div', { className: 'relative w-14 h-14 mb-6 group' },
           createElement('div', { className: 'absolute inset-0 bg-tasklet-steel/20 rounded-2xl animate-spin-slow' }),
@@ -56,14 +56,14 @@ const app_shell = (props: {
             createElement('img', { src: logo_path, className: 'w-8 h-8 group-hover:scale-125 transition-transform', alt: 'T' })
           )
         ),
-        createElement('div', { className: 'hidden md:flex flex-col gap-1 transition-all' },
+        createElement('div', { className: 'flex flex-col gap-1 transition-all' },
           createElement('span', { className: 'text-xs font-black tracking-widest text-[#1E293B] uppercase' }, 'TASKLET'),
           props.user_name && createElement('span', { className: 'text-[10px] font-bold text-gray-500 italic' }, `Hi, ${props.user_name}`)
         )
       ),
 
       // Navigation Items (Pills)
-      createElement('div', { className: 'flex-1 flex flex-col px-4 gap-4 mt-4' },
+      createElement('div', { className: 'flex-1 flex flex-row md:flex-col px-2 md:px-4 gap-2 md:gap-4 mt-0 md:mt-4 h-full md:h-auto items-center md:items-stretch' },
         menu_items.map(item =>
           createElement('button', {
             key: item.id,
@@ -71,15 +71,15 @@ const app_shell = (props: {
               props.set_active_section(item.id as section_type);
               window.scrollTo(0, 0);
             },
-            className: `relative flex items-center gap-5 py-4 px-6 transition-all duration-300 group rounded-3xl overflow-hidden ${props.active_section === item.id
-                ? 'bg-[#1E293B] text-white shadow-xl translate-x-1'
+            className: `relative flex items-center justify-center md:justify-start gap-0 md:gap-5 py-2 px-3 md:py-4 md:px-6 transition-all duration-300 group rounded-xl md:rounded-3xl overflow-hidden min-w-[3rem] ${props.active_section === item.id
+                ? 'bg-[#1E293B] text-white shadow-xl md:translate-x-1'
                 : 'text-gray-500 hover:text-[#1E293B] hover:bg-black/5'
               }`
           },
             // SVG ICON
             createElement('div', { className: 'relative shrink-0' },
               createElement('svg', {
-                className: `w-5 h-5 transition-transform duration-300 ${props.active_section === item.id ? 'scale-110' : 'group-hover:scale-125'}`,
+                className: `w-5 h-5 md:w-5 md:h-5 transition-transform duration-300 ${props.active_section === item.id ? 'scale-110' : 'group-hover:scale-125'}`,
                 fill: 'none',
                 stroke: 'currentColor',
                 viewBox: '0 0 24 24'
@@ -92,25 +92,41 @@ const app_shell = (props: {
             createElement('span', { className: 'hidden md:block text-[12px] font-black tracking-wide' }, item.label),
 
             // Active Accent
-            props.active_section === item.id && createElement('div', { className: 'absolute right-0 top-0 bottom-0 w-2 bg-black/10' })
+            props.active_section === item.id && createElement('div', { className: 'hidden md:block absolute right-0 top-0 bottom-0 w-2 bg-black/10' }),
+            props.active_section === item.id && createElement('div', { className: 'md:hidden absolute bottom-0 left-1/2 -translate-x-1/2 h-1 w-4 rounded-t bg-white/30' })
+          )
+        ),
+        
+        // Mobile Break Button
+        createElement('button', {
+          onClick: props.on_logout,
+          className: 'md:hidden relative flex items-center justify-center py-2 px-3 transition-all duration-300 group rounded-xl overflow-hidden min-w-[3rem] ml-auto text-gray-500 hover:text-red-500 hover:bg-red-50'
+        },
+          createElement('svg', {
+            className: 'w-5 h-5 transition-transform duration-300 group-hover:scale-125',
+            fill: 'none',
+            stroke: 'currentColor',
+            viewBox: '0 0 24 24'
+          },
+            createElement('path', { strokeLinecap: 'round', strokeLinejoin: 'round', strokeWidth: 2.5, d: 'M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1' })
           )
         )
       ),
 
-      // Footer / Profile Area
-      createElement('div', { className: 'p-6 mt-auto border-t border-gray-200 flex flex-col gap-6' },
+      // Footer / Profile Area - Desktop only
+      createElement('div', { className: 'hidden md:flex p-6 mt-auto border-t border-gray-200 flex-col gap-6' },
         createElement('button', {
           onClick: props.on_logout,
-          className: 'flex items-center justify-center md:justify-start gap-4 text-[11px] font-bold text-gray-500 hover:text-[#1E293B] transition-all group'
+          className: 'flex items-center justify-start gap-4 text-[11px] font-bold text-gray-500 hover:text-[#1E293B] transition-all group'
         },
           createElement('div', { className: 'w-3 h-3 rounded-full bg-current group-hover:scale-150 transition-transform' }),
-          createElement('span', { className: 'hidden md:block' }, 'TAKE A BREAK')
+          createElement('span', null, 'TAKE A BREAK')
         )
       )
     ),
 
     // Workspace
-    createElement('main', { className: 'md:pl-64 pl-20 min-h-screen' },
+    createElement('main', { className: 'md:pl-64 pb-16 md:pb-0 min-h-screen' },
       createElement('div', { className: 'w-full min-h-screen flex flex-col' },
         props.children
       )

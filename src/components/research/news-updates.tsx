@@ -10,9 +10,41 @@ import {
   Loader2,
   AlertCircle,
   Star,
-  ChevronRight
+  ChevronRight,
+  BookOpen,
+  Calculator,
+  Microscope,
+  Palette,
+  Music,
+  Heart,
+  Laptop,
+  Languages,
+  TreePine,
+  Users,
+  Eye,
+  MapPin
 } from 'lucide-react';
 import { researchAPI, type NewsArticle, getTimeAgo } from '../../services/research-api';
+
+// Helper function to get category icon
+const getCategoryIcon = (category: string) => {
+  const categoryLower = category.toLowerCase();
+  
+  if (categoryLower.includes('math')) return Calculator;
+  if (categoryLower.includes('science') || categoryLower.includes('discovery')) return Microscope;
+  if (categoryLower.includes('english') || categoryLower.includes('literature')) return BookOpen;
+  if (categoryLower.includes('history') || categoryLower.includes('social')) return MapPin;
+  if (categoryLower.includes('art') || categoryLower.includes('music')) return categoryLower.includes('music') ? Music : Palette;
+  if (categoryLower.includes('health') || categoryLower.includes('wellness')) return Heart;
+  if (categoryLower.includes('technology')) return Laptop;
+  if (categoryLower.includes('language')) return Languages;
+  if (categoryLower.includes('environment')) return TreePine;
+  if (categoryLower.includes('social-emotional') || categoryLower.includes('learning')) return Users;
+  if (categoryLower.includes('special') || categoryLower.includes('education')) return Eye;
+  if (categoryLower.includes('global')) return Globe;
+  
+  return Newspaper; // Default icon
+};
 
 interface NewsUpdatesProps {
   className?: string;
@@ -29,10 +61,17 @@ const NewsUpdates: React.FC<NewsUpdatesProps> = ({ className = '' }) => {
 
   const categories = [
     { id: 'all', label: 'All News', icon: Globe },
+    { id: 'mathematics', label: 'Mathematics', icon: TrendingUp },
+    { id: 'science', label: 'Science & Discovery', icon: Star },
+    { id: 'english', label: 'English & Literature', icon: Newspaper },
+    { id: 'history', label: 'History & Social Studies', icon: Globe },
+    { id: 'arts', label: 'Arts & Music', icon: Star },
     { id: 'technology', label: 'Technology', icon: TrendingUp },
-    { id: 'environment', label: 'Environment', icon: Globe },
-    { id: 'medicine', label: 'Medicine', icon: Star },
-    { id: 'education', label: 'Education', icon: Newspaper }
+    { id: 'health', label: 'Health & Wellness', icon: Newspaper },
+    { id: 'languages', label: 'World Languages', icon: Globe },
+    { id: 'environmental', label: 'Environmental Science', icon: Globe },
+    { id: 'special', label: 'Special Education', icon: Star },
+    { id: 'global', label: 'Global Education', icon: Globe }
   ];
 
   useEffect(() => {
@@ -115,7 +154,7 @@ const NewsUpdates: React.FC<NewsUpdatesProps> = ({ className = '' }) => {
           <div>
             <h2 className="text-3xl font-black text-tasklet-deep mb-2">News & Updates</h2>
             <p className="text-tasklet-deep/70">
-              Latest educational and research developments from around the world
+              Latest educational developments and innovations across all subjects and learning areas
             </p>
           </div>
           <button
@@ -236,29 +275,38 @@ const FeaturedArticleCard: React.FC<FeaturedArticleCardProps> = ({
   isBookmarked,
   onBookmark
 }) => {
+  const [imageError, setImageError] = React.useState(false);
+  const CategoryIcon = getCategoryIcon(article.category);
+
   return (
     <div className="bg-white/60 backdrop-blur-sm border border-white/50 rounded-2xl overflow-hidden hover:shadow-lg transition-all group">
-      {article.imageUrl && (
-        <div className="aspect-video bg-gradient-to-br from-tasklet-accent/20 to-tasklet-deep/20 relative overflow-hidden">
+      <div className="aspect-video bg-gradient-to-br from-tasklet-accent/20 to-tasklet-deep/20 relative overflow-hidden">
+        {article.imageUrl && !imageError ? (
           <img
             src={article.imageUrl}
             alt={article.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            onError={() => setImageError(true)}
           />
-          <div className="absolute top-3 right-3">
-            <button
-              onClick={onBookmark}
-              className={`p-2 rounded-full backdrop-blur-sm transition-all ${
-                isBookmarked
-                  ? 'bg-tasklet-accent text-white'
-                  : 'bg-white/80 text-tasklet-deep/60 hover:bg-white'
-              }`}
-            >
-              <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-current' : ''}`} />
-            </button>
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-tasklet-accent/10 to-tasklet-deep/10">
+            <CategoryIcon className="w-16 h-16 text-tasklet-accent/40 mb-2" />
+            <span className="text-xs text-tasklet-deep/40 font-medium">{article.category}</span>
           </div>
+        )}
+        <div className="absolute top-3 right-3">
+          <button
+            onClick={onBookmark}
+            className={`p-2 rounded-full backdrop-blur-sm transition-all ${
+              isBookmarked
+                ? 'bg-tasklet-accent text-white'
+                : 'bg-white/80 text-tasklet-deep/60 hover:bg-white'
+            }`}
+          >
+            <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-current' : ''}`} />
+          </button>
         </div>
-      )}
+      </div>
 
       <div className="p-6">
         <div className="flex items-center gap-3 mb-3">
@@ -309,56 +357,81 @@ const ArticleCard: React.FC<ArticleCardProps> = ({
   isBookmarked,
   onBookmark
 }) => {
+  const [imageError, setImageError] = React.useState(false);
+  const CategoryIcon = getCategoryIcon(article.category);
+
   return (
-    <div className="bg-white/60 backdrop-blur-sm border border-white/50 rounded-2xl p-6 hover:shadow-lg transition-all group">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <span className="px-3 py-1 bg-tasklet-accent/10 text-tasklet-accent text-xs font-semibold rounded-full uppercase">
+    <div className="bg-white/60 backdrop-blur-sm border border-white/50 rounded-2xl overflow-hidden hover:shadow-lg transition-all group">
+      {/* Image Section */}
+      <div className="h-40 w-full bg-gradient-to-br from-tasklet-accent/10 to-tasklet-deep/10 relative overflow-hidden">
+        {article.imageUrl && !imageError ? (
+          <img
+            src={article.imageUrl}
+            alt={article.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center">
+            <CategoryIcon className="w-12 h-12 text-tasklet-accent/40 mb-2" />
+            <span className="text-xs text-tasklet-deep/40 font-medium">{article.category}</span>
+          </div>
+        )}
+        <div className="absolute top-3 left-3">
+          <span className="px-2 py-1 bg-tasklet-accent/10 text-tasklet-accent text-xs font-semibold rounded-full uppercase backdrop-blur-sm">
             {article.category}
           </span>
-          <span className="text-xs text-tasklet-deep/60">{getTimeAgo(article.publishedAt)}</span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            onClick={onBookmark}
-            className={`p-2 rounded-full transition-all ${
-              isBookmarked
-                ? 'bg-tasklet-accent text-white'
-                : 'bg-white/60 text-tasklet-deep/60 hover:bg-white/80'
-            }`}
-          >
-            <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-current' : ''}`} />
-          </button>
-          <button className="p-2 bg-white/60 hover:bg-white/80 rounded-full transition-all">
-            <Share2 className="w-4 h-4 text-tasklet-deep/60" />
-          </button>
         </div>
       </div>
 
-      <h4 className="text-lg font-bold text-tasklet-deep mb-3 group-hover:text-tasklet-accent transition-colors line-clamp-2">
-        {article.title}
-      </h4>
+      {/* Content Section */}
+      <div className="p-6">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-tasklet-deep/60">{getTimeAgo(article.publishedAt)}</span>
+          </div>
 
-      <p className="text-tasklet-deep/70 text-sm mb-4 line-clamp-3">
-        {article.description}
-      </p>
-
-      <div className="flex items-center justify-between pt-4 border-t border-tasklet-deep/10">
-        <div className="flex items-center gap-2 text-xs text-tasklet-deep/60">
-          <Globe className="w-3 h-3" />
-          {article.source}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onBookmark}
+              className={`p-2 rounded-full transition-all ${
+                isBookmarked
+                  ? 'bg-tasklet-accent text-white'
+                  : 'bg-white/60 text-tasklet-deep/60 hover:bg-white/80'
+              }`}
+            >
+              <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-current' : ''}`} />
+            </button>
+            <button className="p-2 bg-white/60 hover:bg-white/80 rounded-full transition-all">
+              <Share2 className="w-4 h-4 text-tasklet-deep/60" />
+            </button>
+          </div>
         </div>
 
-        <a
-          href={article.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 px-4 py-2 bg-tasklet-accent text-white rounded-xl hover:bg-tasklet-accent/90 transition-colors text-sm font-medium"
-        >
-          <ExternalLink className="w-4 h-4" />
-          Read Article
-        </a>
+        <h4 className="text-lg font-bold text-tasklet-deep mb-3 group-hover:text-tasklet-accent transition-colors line-clamp-2">
+          {article.title}
+        </h4>
+
+        <p className="text-tasklet-deep/70 text-sm mb-4 line-clamp-3">
+          {article.description}
+        </p>
+
+        <div className="flex items-center justify-between pt-4 border-t border-tasklet-deep/10">
+          <div className="flex items-center gap-2 text-xs text-tasklet-deep/60">
+            <Globe className="w-3 h-3" />
+            {article.source}
+          </div>
+
+          <a
+            href={article.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-4 py-2 bg-tasklet-accent text-white rounded-xl hover:bg-tasklet-accent/90 transition-colors text-sm font-medium"
+          >
+            <ExternalLink className="w-4 h-4" />
+            Read Article
+          </a>
+        </div>
       </div>
     </div>
   );

@@ -251,7 +251,7 @@ export default function PomodoroTimer({ initial_focus: _initial_focus }: Pomodor
   // RENDER
   // ══════════════════════════════════════════════
   return (
-    <div className="h-screen w-full bg-[#f4f7fa] text-slate-800 font-sans p-4 overflow-hidden flex flex-col">
+    <div className="h-[calc(100vh-4rem)] md:h-screen w-full bg-[#f4f7fa] text-slate-800 font-sans p-4 overflow-y-auto lg:overflow-hidden flex flex-col">
 
       {/* ── TOP HEADER ── */}
       <div className="flex items-center justify-between mb-4 px-2 shrink-0">
@@ -275,10 +275,10 @@ export default function PomodoroTimer({ initial_focus: _initial_focus }: Pomodor
       </div>
 
       {/* ── MAIN 3-COL GRID ── */}
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 min-h-0 mx-auto max-w-[1500px] w-full">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-5 min-h-0 mx-auto max-w-[1500px] w-full pb-10 lg:pb-0">
 
         {/* ═══ LEFT PANEL (Col 3) ═══ */}
-        <div className="hidden lg:flex flex-col col-span-3 gap-4 min-h-0">
+        <div className="flex flex-col lg:col-span-3 gap-4 min-h-0 order-2 lg:order-1">
 
           {/* Stats */}
           <div className="grid grid-cols-2 gap-3 shrink-0">
@@ -353,7 +353,7 @@ export default function PomodoroTimer({ initial_focus: _initial_focus }: Pomodor
         </div>
 
         {/* ═══ CENTER PANEL – TIMER (Col 6) ═══ */}
-        <div className="lg:col-span-6 bg-white rounded-3xl border border-slate-200/60 shadow-sm relative overflow-hidden flex flex-col">
+        <div className="lg:col-span-6 bg-white rounded-3xl border border-slate-200/60 shadow-sm relative overflow-hidden flex flex-col order-1 lg:order-2 min-h-[450px] lg:min-h-0">
           <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr ${ac.color} opacity-[0.03] blur-[100px] rounded-full pointer-events-none transition-all duration-1000 ${isActive ? 'animate-pulse scale-105' : ''}`} />
 
           <div className="flex-1 flex flex-col items-center justify-center relative p-6">
@@ -403,10 +403,10 @@ export default function PomodoroTimer({ initial_focus: _initial_focus }: Pomodor
         </div>
 
         {/* ═══ RIGHT PANEL – Tasks & Notes (Col 3) ═══ */}
-        <div className="lg:col-span-3 flex flex-col gap-4 min-h-0">
+        <div className="lg:col-span-3 flex flex-col gap-4 min-h-0 order-3">
 
           {/* Action Plan */}
-          <div className="bg-white border border-slate-200/80 rounded-3xl p-4 flex flex-col flex-1 min-h-0 shadow-sm">
+          <div className="bg-white border border-slate-200/80 rounded-3xl p-4 flex flex-col flex-1 min-h-[300px] lg:min-h-0 shadow-sm">
             <h3 className="text-[10px] font-black text-slate-800 uppercase tracking-widest mb-3 flex items-center justify-between">
               <span className="flex items-center gap-2"><Target className="w-3.5 h-3.5 text-emerald-500" /> Action Plan</span>
               <div className="flex items-center gap-1.5">
@@ -448,7 +448,7 @@ export default function PomodoroTimer({ initial_focus: _initial_focus }: Pomodor
           </div>
 
           {/* Brain Dump Notes */}
-          <div className="bg-white border border-slate-200/80 rounded-3xl p-4 flex flex-col flex-1 min-h-0 shadow-sm">
+          <div className="bg-white border border-slate-200/80 rounded-3xl p-4 flex flex-col flex-1 min-h-[250px] lg:min-h-0 shadow-sm">
             <h3 className="text-[10px] font-black text-slate-800 uppercase tracking-widest mb-3 flex items-center justify-between">
               <span className="flex items-center gap-2"><FileText className="w-3.5 h-3.5 text-amber-500" /> Brain Dump</span>
               {notes.length > 0 && (

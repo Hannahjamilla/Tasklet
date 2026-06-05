@@ -114,21 +114,21 @@ const hero_section = (params: {
   focus_value: string,
   set_focus: (v: string) => void
 }) => {
-  return createElement('section', { className: 'relative min-h-screen flex items-center justify-center pt-24 pb-20 px-6 bg-tasklet-beige bg-[radial-gradient(#CBD5E1_1px,transparent_1px)] [background-size:24px_24px]' },
+  return createElement('section', { className: 'relative min-h-screen flex items-center justify-center pt-16 md:pt-24 pb-12 md:pb-20 px-4 md:px-6 bg-tasklet-beige bg-[radial-gradient(#CBD5E1_1px,transparent_1px)] [background-size:24px_24px]' },
     
     // BENTO BOX GRID
     createElement('div', { className: 'w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 md:grid-rows-2 gap-6 relative z-10' },
       
       // MAIN BLOCK (Hero Text)
-      createElement('div', { className: 'md:col-span-2 md:row-span-2 bg-white/90 backdrop-blur-md border border-slate-200 rounded-[2rem] p-10 lg:p-14 shadow-xl flex flex-col justify-center relative overflow-hidden' },
+      createElement('div', { className: 'md:col-span-2 md:row-span-2 bg-white/90 backdrop-blur-md border border-slate-200 rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-10 lg:p-14 shadow-xl flex flex-col justify-center relative overflow-hidden' },
           createElement('div', { className: 'absolute -right-10 -bottom-10 opacity-5' }, hero_icons.target()),
           createElement('div', { className: 'stamp mb-8 w-fit bg-white border-2 border-dashed border-tasklet-accent/30 text-tasklet-accent/50' }, 'SCHOLARSHIP EDITION'),
-          createElement('h1', { className: 'text-5xl lg:text-7xl font-black text-tasklet-deep leading-[0.9] tracking-tighter mb-6 relative z-10' },
+          createElement('h1', { className: 'text-3xl sm:text-5xl lg:text-7xl font-black text-tasklet-deep leading-[0.9] tracking-tighter mb-6 relative z-10' },
             'Your ',
             createElement('span', { className: 'highlighter' }, 'Digital Workspace.'),
             createElement('br')
           ),
-          createElement('p', { className: 'text-lg font-scholar text-tasklet-deep/60 leading-relaxed mb-10 max-w-md' },
+          createElement('p', { className: 'text-sm md:text-lg font-scholar text-tasklet-deep/60 leading-relaxed mb-6 md:mb-10 max-w-md' },
             'Experience absolute clarity. An optimized note-taking and deep-focus layout designed exclusively for top performers.'
           ),
           
@@ -150,7 +150,7 @@ const hero_section = (params: {
       ),
 
       // STICKY NOTE BLOCK
-      createElement('div', { className: 'md:col-span-1 md:row-span-1 bg-[#FEF08A] rounded-[2rem] p-8 shadow-sm flex flex-col relative rotate-2 hover:rotate-0 transition-transform' },
+      createElement('div', { className: 'md:col-span-1 md:row-span-1 bg-[#FEF08A] rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 shadow-sm flex flex-col relative md:rotate-2 hover:rotate-0 transition-transform' },
           hero_icons.paperclip('w-10 h-10 text-slate-500 absolute -top-4 left-6 rotate-12'),
           createElement('div', { className: 'text-[10px] font-bold text-yellow-800/50 uppercase tracking-widest mb-4' }, 'Daily Objective'),
           createElement('h3', { className: 'text-2xl font-black text-tasklet-deep mb-2' }, 'No Distractions.'),
@@ -158,7 +158,7 @@ const hero_section = (params: {
       ),
 
       // QUICK STATS / ACADEMIC BLOCK
-      createElement('div', { className: 'md:col-span-1 md:row-span-1 bg-tasklet-accent rounded-[2rem] p-8 shadow-sm flex flex-col justify-between text-white overflow-hidden relative group cursor-pointer', onClick: () => params.navigate('planners') },
+      createElement('div', { className: 'md:col-span-1 md:row-span-1 bg-tasklet-accent rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 shadow-sm flex flex-col justify-between text-white overflow-hidden relative group cursor-pointer', onClick: () => params.navigate('planners') },
           hero_icons.sparkle('w-32 h-32 absolute -bottom-10 -right-10 text-white/10 group-hover:scale-110 transition-transform'),
           createElement('div', { className: 'w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mb-4 backdrop-blur-sm' }, hero_icons.arrow('w-5 h-5 -rotate-45')),
           createElement('div', null,
@@ -168,7 +168,7 @@ const hero_section = (params: {
       ),
 
       // WIDE BENTO (Promises)
-      createElement('div', { className: 'md:col-span-2 md:row-span-1 lg:col-span-2 bg-slate-900 border border-slate-800 rounded-[2rem] p-8 shadow-sm flex flex-col sm:flex-row justify-between items-center text-white relative overflow-hidden' },
+      createElement('div', { className: 'md:col-span-2 md:row-span-1 lg:col-span-2 bg-slate-900 border border-slate-800 rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 shadow-sm flex flex-col sm:flex-row justify-between items-center text-white relative overflow-hidden' },
           createElement('div', { className: 'absolute top-0 right-0 h-full w-1/2 opacity-20 hidden sm:block' }, hero_icons.notebook_rings('w-full h-full rotate-90')),
           createElement('div', { className: 'z-10 w-full' },
               createElement('div', { className: 'flex justify-between items-end w-full' },
@@ -446,25 +446,25 @@ const faq_section = () => {
 };
 
 const footer_section = (props: { navigate: (s: any) => void }) => {
-    return createElement('footer', { className: 'py-40 px-12 bg-tasklet-deep text-white/80 overflow-hidden relative' },
+    return createElement('footer', { className: 'py-16 md:py-40 px-6 md:px-12 bg-tasklet-deep text-white/80 overflow-hidden relative' },
         createElement('div', { className: 'mesh-glow opacity-5' }),
         createElement('div', { className: 'max-w-7xl mx-auto relative z-10' },
-            createElement('div', { className: 'flex flex-col lg:flex-row justify-between items-start gap-40 mb-40' },
+            createElement('div', { className: 'flex flex-col lg:flex-row justify-between items-start gap-12 md:gap-40 mb-16 md:mb-40' },
                 createElement('div', { className: 'lg:w-1/2' },
-                    createElement('h2', { className: 'text-9xl font-bold text-white mb-20 leading-none italic' }, 'Tasklet.'),
+                    createElement('h2', { className: 'text-5xl md:text-9xl font-bold text-white mb-8 md:mb-20 leading-none italic' }, 'Tasklet.'),
                     createElement('p', { className: 'text-xl text-white/40 max-w-sm leading-relaxed font-sans' }, 
                         'The premier spatial ecosystem for the high-performing intellectual.'
                     )
                 ),
-                createElement('div', { className: 'grid grid-cols-2 md:grid-cols-3 gap-24 lg:w-1/2' },
+                createElement('div', { className: 'grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-24 lg:w-1/2' },
                     [
                         { h: 'Systems', l: ['Dashboard', 'Monk Mode', 'The Architect', 'The Sage'] },
                         { h: 'Resource', l: ['Documentation', 'Methodology', 'Privacy', 'Security'] },
                         { h: 'Collective', l: ['GitHub', 'Twitter', 'Laboratory'] }
                     ].map(col => 
                         createElement('div', { key: col.h },
-                            createElement('h4', { className: 'text-[10px] font-bold tracking-[0.4em] uppercase mb-12 text-tasklet-accent font-sans' }, col.h),
-                            createElement('ul', { className: 'space-y-6' },
+                            createElement('h4', { className: 'text-[10px] font-bold tracking-[0.4em] uppercase mb-6 md:mb-12 text-tasklet-accent font-sans' }, col.h),
+                            createElement('ul', { className: 'space-y-3 md:space-y-6' },
                                 col.l.map(link => 
                                     createElement('li', { 
                                         key: link, 
@@ -528,7 +528,7 @@ const welcome_page = ({ navigate }: { navigate: (section: any, focus?: string) =
     createElement('section', { className: 'py-32 bg-tasklet-beige px-6 text-center note-grid' },
       createElement('div', { className: 'max-w-3xl mx-auto' },
         createElement('div', { className: 'w-16 h-1 bg-tasklet-accent mx-auto mb-12' }),
-        createElement('h2', { className: 'text-5xl md:text-6xl font-black text-tasklet-deep mb-8 leading-tight tracking-tighter' }, 
+        createElement('h2', { className: 'text-3xl sm:text-5xl md:text-6xl font-black text-tasklet-deep mb-8 leading-tight tracking-tighter' }, 
             'Your path to ', 
             createElement('span', { className: 'highlighter' }, 'Mastery'),
             ' starts here.'

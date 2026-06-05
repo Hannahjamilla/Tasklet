@@ -29,6 +29,26 @@ import ResourceHub from './resource-hub';
 import NewsUpdates from './news-updates';
 import { researchAPI, type ResearchPaper, type LearningResource, type DictionaryResult } from '../../services/research-api';
 
+// Helper function to get category icon
+const getCategoryIcon = (category: string) => {
+  const categoryLower = category.toLowerCase();
+  
+  if (categoryLower.includes('math')) return Calculator;
+  if (categoryLower.includes('science') || categoryLower.includes('discovery')) return Microscope;
+  if (categoryLower.includes('english') || categoryLower.includes('literature')) return BookOpen;
+  if (categoryLower.includes('history') || categoryLower.includes('social')) return Eye;
+  if (categoryLower.includes('art') || categoryLower.includes('music')) return PenTool;
+  if (categoryLower.includes('health') || categoryLower.includes('wellness')) return Heart;
+  if (categoryLower.includes('technology')) return Database;
+  if (categoryLower.includes('language')) return BookOpen;
+  if (categoryLower.includes('environment')) return Eye;
+  if (categoryLower.includes('social-emotional') || categoryLower.includes('learning')) return Star;
+  if (categoryLower.includes('special') || categoryLower.includes('education')) return Eye;
+  if (categoryLower.includes('global')) return Star;
+  
+  return Newspaper; // Default icon
+};
+
 // Types
 interface Resource {
   id: string;
@@ -543,7 +563,7 @@ const ResearchLab: React.FC<{ set_section?: (s: any) => void }> = ({ set_section
       </header>
 
       {/* ── Main Content Container ── */}
-      <main className="max-w-[1400px] mx-auto mx-4 sm:mx-6 lg:mx-auto bg-white/90 backdrop-blur-sm rounded-[2rem] min-h-[75vh] shadow-[0_8px_40px_rgba(0,0,0,0.08)] border border-slate-200/60 overflow-hidden flex flex-col mb-8">
+       <main className="max-w-[1400px] mx-auto bg-white/90 backdrop-blur-sm rounded-[1.5rem] md:rounded-[2rem] min-h-[75vh] shadow-[0_8px_40px_rgba(0,0,0,0.08)] border border-slate-200/60 overflow-hidden flex flex-col mb-8">
           {/* ── Navigation Bar ── */}
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between px-4 md:px-6 py-3 border-b border-slate-100 bg-gradient-to-r from-slate-50/90 to-white/70 gap-3">
              <div className="flex flex-wrap items-center gap-3">
@@ -624,9 +644,21 @@ const ResearchLab: React.FC<{ set_section?: (s: any) => void }> = ({ set_section
                            onClick={() => window.open(featuredNews[0].url, '_blank')}
                            className="lg:col-span-5 relative rounded-2xl overflow-hidden group cursor-pointer min-h-[340px] bg-gradient-to-br from-blue-600 to-indigo-700 shadow-xl hover:shadow-2xl transition-shadow duration-300"
                          >
-                           {featuredNews[0].imageUrl && (
-                             <img src={featuredNews[0].imageUrl} alt="Featured" className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700" />
-                           )}
+                           {featuredNews[0].imageUrl ? (
+                             <img 
+                               src={featuredNews[0].imageUrl} 
+                               alt="Featured" 
+                               className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700"
+                               onError={(e) => {
+                                 e.currentTarget.style.display = 'none';
+                                 const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                                 if (fallback) fallback.style.display = 'flex';
+                               }}
+                             />
+                           ) : null}
+                           <div className="absolute inset-0 w-full h-full flex items-center justify-center opacity-30" style={{ display: featuredNews[0].imageUrl ? 'none' : 'flex' }}>
+                             <Newspaper className="w-20 h-20 text-white" />
+                           </div>
                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
                            <div className="absolute top-4 left-4 z-10">
                              <span className="px-3 py-1.5 rounded-lg bg-blue-500/90 text-white text-[10px] font-black uppercase tracking-wider backdrop-blur-md shadow-sm">{featuredNews[0].category || 'Trending'}</span>
@@ -651,9 +683,21 @@ const ResearchLab: React.FC<{ set_section?: (s: any) => void }> = ({ set_section
                            onClick={() => window.open(featuredNews[1].url, '_blank')}
                            className="lg:col-span-4 relative rounded-2xl overflow-hidden group cursor-pointer min-h-[340px] bg-gradient-to-br from-emerald-600 to-teal-700 shadow-xl hover:shadow-2xl transition-shadow duration-300"
                          >
-                           {featuredNews[1].imageUrl && (
-                             <img src={featuredNews[1].imageUrl} alt="Story" className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700" />
-                           )}
+                           {featuredNews[1].imageUrl ? (
+                             <img 
+                               src={featuredNews[1].imageUrl} 
+                               alt="Story" 
+                               className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700"
+                               onError={(e) => {
+                                 e.currentTarget.style.display = 'none';
+                                 const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                                 if (fallback) fallback.style.display = 'flex';
+                               }}
+                             />
+                           ) : null}
+                           <div className="absolute inset-0 w-full h-full flex items-center justify-center opacity-30" style={{ display: featuredNews[1].imageUrl ? 'none' : 'flex' }}>
+                             <Star className="w-16 h-16 text-white" />
+                           </div>
                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
                            <div className="absolute top-4 left-4 z-10">
                              <span className="px-3 py-1.5 rounded-lg bg-emerald-500/90 text-white text-[10px] font-black uppercase tracking-wider backdrop-blur-md shadow-sm">Latest</span>
@@ -737,9 +781,21 @@ const ResearchLab: React.FC<{ set_section?: (s: any) => void }> = ({ set_section
                            onClick={() => window.open(featuredNews[2].url, '_blank')}
                            className="lg:col-span-4 relative rounded-2xl overflow-hidden group cursor-pointer min-h-[300px] bg-gradient-to-br from-amber-600 to-orange-700 shadow-xl hover:shadow-2xl transition-shadow duration-300"
                          >
-                           {featuredNews[2].imageUrl && (
-                             <img src={featuredNews[2].imageUrl} alt="Story" className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700" />
-                           )}
+                           {featuredNews[2].imageUrl ? (
+                             <img 
+                               src={featuredNews[2].imageUrl} 
+                               alt="Story" 
+                               className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:opacity-60 group-hover:scale-105 transition-all duration-700"
+                               onError={(e) => {
+                                 e.currentTarget.style.display = 'none';
+                                 const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                                 if (fallback) fallback.style.display = 'flex';
+                               }}
+                             />
+                           ) : null}
+                           <div className="absolute inset-0 w-full h-full flex items-center justify-center opacity-30" style={{ display: featuredNews[2].imageUrl ? 'none' : 'flex' }}>
+                             <BookOpen className="w-16 h-16 text-white" />
+                           </div>
                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
                            <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
                              <div className="flex items-center gap-2 mb-2 text-white/70 font-medium text-xs drop-shadow-sm">
@@ -783,25 +839,35 @@ const ResearchLab: React.FC<{ set_section?: (s: any) => void }> = ({ set_section
                  ) : (
                    /* Compact / Stream Layout */
                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 animate-in fade-in duration-300">
-                     {featuredNews.length > 0 ? featuredNews.map((article, index) => (
+                     {featuredNews.length > 0 ? featuredNews.map((article, index) => {
+                       const CategoryIcon = getCategoryIcon(article.category || 'news');
+                       return (
                        <div 
                          key={index}
                          onClick={() => window.open(article.url, '_blank')}
                          className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden group hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col h-full"
                        >
-                         {article.imageUrl ? (
-                           <div className="h-44 w-full relative overflow-hidden bg-slate-100">
-                             <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                             <div className="absolute top-3 left-3">
-                               <span className="px-2 py-1 rounded-md text-[9px] font-black uppercase bg-black/50 text-white backdrop-blur-md tracking-wider">{article.category || 'News'}</span>
-                             </div>
+                         <div className="h-44 w-full relative overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
+                           {article.imageUrl ? (
+                             <img 
+                               src={article.imageUrl} 
+                               alt={article.title} 
+                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                               onError={(e) => {
+                                 e.currentTarget.style.display = 'none';
+                                 const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                                 if (fallback) fallback.style.display = 'flex';
+                               }}
+                             />
+                           ) : null}
+                           <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center" style={{ display: article.imageUrl ? 'none' : 'flex' }}>
+                             <CategoryIcon className="w-12 h-12 text-slate-300 mb-2" />
+                             <span className="text-slate-400 text-xs font-medium text-center">{article.category || 'News'}</span>
                            </div>
-                         ) : (
-                           <div className="h-44 w-full bg-gradient-to-br from-slate-100 to-slate-200 flex flex-col items-center justify-center p-4">
-                             <Newspaper className="w-8 h-8 text-slate-300 mb-2" />
-                             <span className="text-slate-400 text-xs font-medium text-center">{article.source}</span>
+                           <div className="absolute top-3 left-3">
+                             <span className="px-2 py-1 rounded-md text-[9px] font-black uppercase bg-black/50 text-white backdrop-blur-md tracking-wider">{article.category || 'News'}</span>
                            </div>
-                         )}
+                         </div>
                          <div className="p-4 flex flex-col flex-1">
                            <div className="flex items-center gap-2 mb-2">
                              <span className="text-[11px] text-slate-400 font-semibold">{article.source}</span>
@@ -814,7 +880,7 @@ const ResearchLab: React.FC<{ set_section?: (s: any) => void }> = ({ set_section
                            </div>
                          </div>
                        </div>
-                     )) : (
+                     )}) : (
                        Array(8).fill(0).map((_, i) => (
                          <div key={i} className="bg-slate-50 border border-slate-100 rounded-2xl h-72 animate-pulse"></div>
                        ))

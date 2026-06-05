@@ -105,9 +105,9 @@ const dashboard_home = (_props: { set_section: (s: any) => void }) => {
         createElement('div', { className: 'fixed inset-0 z-0 pointer-events-none opacity-20 bg-[linear-gradient(#CBD5E1_1px,transparent_1px),linear-gradient(90deg,#CBD5E1_1px,transparent_1px)] [background-size:24px_24px]' }),
 
         // Structured Header
-        createElement('header', { className: 'w-full px-8 md:px-12 py-10 max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10' },
+        createElement('header', { className: 'w-full px-4 md:px-8 lg:px-12 py-6 md:py-10 max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 relative z-10' },
             createElement('div', { className: 'flex flex-col gap-2' },
-                createElement('h1', { className: 'text-3xl font-black font-serif text-[#1E293B]' }, `${greeting}!`),
+                createElement('h1', { className: 'text-2xl md:text-3xl font-black font-serif text-[#1E293B]' }, `${greeting}!`),
                 createElement('p', { className: 'text-[14px] font-medium text-[#475569]' }, 'Welcome to your focused workspace. Everything is set up for you.')
             ),
             
@@ -124,13 +124,13 @@ const dashboard_home = (_props: { set_section: (s: any) => void }) => {
         ),
 
         // 2-Column "Modern Desk" Layout
-        createElement('div', { className: 'w-full flex-1 max-w-7xl mx-auto px-8 md:px-12 grid grid-cols-1 xl:grid-cols-12 gap-8 md:gap-10 z-10 relative' },
+        createElement('div', { className: 'w-full flex-1 max-w-7xl mx-auto px-4 md:px-8 lg:px-12 grid grid-cols-1 xl:grid-cols-12 gap-6 md:gap-8 lg:gap-10 z-10 relative pb-6' },
 
             // ====== LEFT COLUMN (The Notebook Side) ======
             createElement('div', { className: 'xl:col-span-7 flex flex-col gap-8 h-full' },
                 
                 // Solid High-Contrast Sticky Note for Main Priority
-                createElement('div', { className: `p-8 rounded-[1.5rem] shadow-sm transform -rotate-1 transition-all duration-300 relative shrink-0 ${is_priority_done ? 'bg-[#10B981] border-2 border-[#059669]' : 'bg-[#FBBF24] border-2 border-[#D97706]'}` },
+                createElement('div', { className: `p-5 md:p-8 rounded-[1.5rem] shadow-sm transform md:-rotate-1 transition-all duration-300 relative shrink-0 ${is_priority_done ? 'bg-[#10B981] border-2 border-[#059669]' : 'bg-[#FBBF24] border-2 border-[#D97706]'}` },
                     createElement('div', { className: 'absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-6 bg-white/30 backdrop-blur-md rounded-md rotate-2 shadow-sm border border-white/20' }), 
                     createElement('h2', { className: `text-[12px] font-black uppercase tracking-widest flex items-center gap-2 mb-4 ${is_priority_done ? 'text-emerald-50' : 'text-amber-900'}` }, ICON_STAR, 'Top Priority'),
                     
@@ -158,7 +158,7 @@ const dashboard_home = (_props: { set_section: (s: any) => void }) => {
                 ),
 
                 // Sleek, Structured To-Do List
-                createElement('div', { className: 'bg-[#FFFFFF] rounded-[1.5rem] border-2 border-[#CBD5E1] shadow-sm p-8 flex flex-col gap-5 relative overflow-hidden flex-1 h-full min-h-[300px]' },
+                createElement('div', { className: 'bg-[#FFFFFF] rounded-[1.5rem] border-2 border-[#CBD5E1] shadow-sm p-5 md:p-8 flex flex-col gap-5 relative overflow-hidden flex-1 h-full min-h-[300px]' },
                     createElement('div', { className: 'absolute left-8 top-0 bottom-0 w-0.5 bg-[#94A3B8]/30' }), // solid slate tracking line
                     
                     createElement('div', { className: 'flex items-center justify-between z-10 pl-6 shrink-0' },

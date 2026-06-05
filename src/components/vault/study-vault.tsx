@@ -25,49 +25,49 @@ const InteractiveQuiz = ({ question, answer }: { question: string, answer: strin
     };
 
     return createElement('div', { 
-        className: `my-8 border-2 rounded-xl overflow-hidden shadow-sm transition-all ${
+        className: `my-6 md:my-8 border-2 rounded-lg md:rounded-xl overflow-hidden shadow-sm transition-all mx-2 sm:mx-0 ${
             status === 'correct' ? 'border-[#10B981]' : status === 'incorrect' ? 'border-[#EF4444]' : 'border-[#DCD6C8] hover:border-[#3B82F6]'
         }`
     },
         // Header
-        createElement('div', { className: 'p-5 flex gap-3 bg-[#F8FAFC]' },
-            createElement(AlertCircle, { className: 'w-6 h-6 min-w-6 text-[#3B82F6]' }),
-            createElement('div', { className: 'flex-1 flex flex-col gap-3' },
-                createElement('h4', { className: 'font-black text-[#1E293B] text-lg leading-snug' }, question),
+        createElement('div', { className: 'p-3 md:p-5 flex gap-2 md:gap-3 bg-[#F8FAFC]' },
+            createElement(AlertCircle, { className: 'w-5 h-5 md:w-6 md:h-6 min-w-5 md:min-w-6 text-[#3B82F6] mt-0.5' }),
+            createElement('div', { className: 'flex-1 flex flex-col gap-2 md:gap-3' },
+                createElement('h4', { className: 'font-black text-[#1E293B] text-base md:text-lg leading-snug' }, question),
                 
                 // Input area
-                !revealed && createElement('div', { className: 'flex flex-col md:flex-row gap-3 mt-2' },
+                !revealed && createElement('div', { className: 'flex flex-col gap-2 md:gap-3 mt-1 md:mt-2' },
                     createElement('input', {
                         type: 'text',
                         value: userAnswer,
                         onChange: (e: any) => { setUserAnswer(e.target.value); setStatus('idle'); },
                         onKeyDown: (e: any) => { if (e.key === 'Enter') checkAnswer(); },
                         placeholder: 'Type your answer here...',
-                        className: `flex-1 px-4 py-2 rounded-lg border-2 text-[15px] font-bold outline-none transition-colors ${
+                        className: `w-full px-3 md:px-4 py-2 md:py-2.5 rounded-lg border-2 text-sm md:text-[15px] font-bold outline-none transition-colors ${
                             status === 'incorrect' ? 'border-[#EF4444] bg-[#FEF2F2] text-[#991B1B]' : 'border-[#CBD5E1] focus:border-[#3B82F6]'
                         }`
                     }),
-                    createElement('div', { className: 'flex gap-2' },
+                    createElement('div', { className: 'flex flex-col sm:flex-row gap-2' },
                         createElement('button', {
                             onClick: checkAnswer,
-                            className: 'px-5 py-2 bg-[#3B82F6] hover:bg-[#2563EB] text-white font-black rounded-lg transition-colors'
+                            className: 'w-full sm:flex-1 px-4 md:px-5 py-2 md:py-2.5 bg-[#3B82F6] hover:bg-[#2563EB] text-white font-black rounded-lg transition-colors text-sm md:text-base'
                         }, 'Check Answer'),
                         createElement('button', {
                             onClick: () => setRevealed(true),
-                            className: 'px-4 py-2 bg-[#E2E8F0] hover:bg-[#CBD5E1] text-[#475569] font-black rounded-lg transition-colors'
+                            className: 'w-full sm:w-auto px-4 py-2 md:py-2.5 bg-[#E2E8F0] hover:bg-[#CBD5E1] text-[#475569] font-black rounded-lg transition-colors text-sm md:text-base'
                         }, 'Reveal')
                     )
                 ),
                 
                 // Feedback message
-                status === 'incorrect' && !revealed && createElement('p', { className: 'text-[#DC2626] font-bold text-sm' }, 'Incorrect answer. Try again or click reveal!'),
+                status === 'incorrect' && !revealed && createElement('p', { className: 'text-[#DC2626] font-bold text-xs md:text-sm' }, 'Incorrect answer. Try again or click reveal!'),
                 
                 // Revealed Answer
-                revealed && createElement('div', { className: `mt-3 p-4 rounded-lg flex flex-col gap-1 ${status === 'correct' ? 'bg-[#D1FAE5]' : 'bg-[#E0F2FE]'}` },
+                revealed && createElement('div', { className: `mt-2 md:mt-3 p-3 md:p-4 rounded-lg flex flex-col gap-1 ${status === 'correct' ? 'bg-[#D1FAE5]' : 'bg-[#E0F2FE]'}` },
                     status === 'correct' 
-                        ? createElement('p', { className: 'text-[#059669] font-black text-lg mb-1' }, '🎉 Correct!') 
-                        : createElement('p', { className: 'text-[#0369A1] font-black text-sm mb-1 uppercase tracking-widest' }, 'THE CORRECT ANSWER IS:'),
-                    createElement('p', { className: 'text-[#1E293B] font-bold text-lg' }, answer)
+                        ? createElement('p', { className: 'text-[#059669] font-black text-base md:text-lg mb-1' }, '🎉 Correct!') 
+                        : createElement('p', { className: 'text-[#0369A1] font-black text-xs md:text-sm mb-1 uppercase tracking-widest' }, 'THE CORRECT ANSWER IS:'),
+                    createElement('p', { className: 'text-[#1E293B] font-bold text-base md:text-lg' }, answer)
                 )
             )
         )
@@ -161,12 +161,12 @@ const study_vault = () => {
         : -1;
     const level_subjects = lectures_data.filter(s => s.level === active_level);
 
-    return createElement('section', { className: 'w-full h-screen flex flex-col bg-[#F5F3EC] text-[#1E293B] overflow-hidden' },
+    return createElement('section', { className: 'w-full h-[calc(100vh-4rem)] md:h-screen flex flex-col bg-[#F5F3EC] text-[#1E293B] overflow-hidden' },
 
         // ── Top Bar ──────────────────────────────────────────────────
-        createElement('div', { className: 'w-full px-6 py-5 border-b-[6px] border-[#E8E4D9] bg-[#EAE5DB] flex flex-col md:flex-row gap-4 items-center justify-between shrink-0 z-20' },
+        createElement('div', { className: 'w-full px-4 md:px-6 py-3 md:py-5 border-b-[6px] border-[#E8E4D9] bg-[#EAE5DB] flex flex-col md:flex-row gap-3 md:gap-4 items-start md:items-center justify-between shrink-0 z-20' },
             createElement('div', { className: 'flex flex-col gap-0.5' },
-                createElement('h1', { className: 'text-2xl font-black font-serif tracking-widest text-[#1E293B]' }, 'MY STUDY VAULT'),
+                createElement('h1', { className: 'text-lg md:text-2xl font-black font-serif tracking-widest text-[#1E293B]' }, 'MY STUDY VAULT'),
                 createElement('p', { className: 'text-[11px] font-bold text-[#64748B] uppercase tracking-widest' },
                     active_level === 'elementary' ? 'Elementary School — ' + subjects.length + ' Subjects' : 'High School — ' + subjects.length + ' Subjects'
                 )
@@ -203,7 +203,7 @@ const study_vault = () => {
         ),
 
         // ── Shelf Grid ───────────────────────────────────────────────
-        createElement('div', { className: 'flex-1 overflow-y-auto no-scrollbar px-6 py-8 print:hidden' },
+        createElement('div', { className: 'flex-1 overflow-y-auto no-scrollbar px-4 md:px-6 py-6 md:py-8 print:hidden' },
             subjects.length === 0
                 ? createElement('div', { className: 'flex flex-col items-center justify-center h-full opacity-40 gap-3' },
                     createElement(AlertCircle, { className: 'w-12 h-12 text-[#64748B]' }),
@@ -248,11 +248,30 @@ const study_vault = () => {
             className: 'fixed inset-0 z-[200] bg-white flex flex-col animate-fade-in'
         },
             // Top toolbar — navigation + highlight tools
-            createElement('div', { className: 'w-full bg-[#F8FAFC] border-b-2 border-[#E2E8F0] py-3 px-6 flex flex-wrap justify-between items-center shrink-0 shadow-sm gap-2' },
-                createElement('div', { className: 'flex items-center gap-3' },
+            createElement('div', { className: 'w-full bg-[#F8FAFC] border-b-2 border-[#E2E8F0] py-2 md:py-3 px-3 md:px-6 flex flex-wrap justify-between items-center shrink-0 shadow-sm gap-2' },
+                createElement('div', { className: 'flex items-center gap-2 md:gap-3 flex-wrap' },
+                    // Mobile hamburger menu button
+                    createElement('button', {
+                        onClick: () => set_sidebar_open(!sidebar_open),
+                        className: 'md:hidden p-2 bg-white border-2 border-[#E2E8F0] hover:border-[#3B82F6] text-[#64748B] hover:text-[#3B82F6] rounded-lg transition-all duration-200'
+                    },
+                        createElement('svg', {
+                            className: 'w-4 h-4',
+                            fill: 'none',
+                            stroke: 'currentColor',
+                            viewBox: '0 0 24 24'
+                        },
+                            createElement('path', {
+                                strokeLinecap: 'round',
+                                strokeLinejoin: 'round',
+                                strokeWidth: 2,
+                                d: sidebar_open ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'
+                            })
+                        )
+                    ),
                     createElement('button', {
                         onClick: () => set_selected_subject(null),
-                        className: 'px-4 py-2 bg-white border-2 border-[#E2E8F0] hover:bg-[#FEE2E2] hover:border-[#FCA5A5] hover:text-[#DC2626] text-[#64748B] text-[11px] font-black uppercase tracking-widest rounded transition-colors'
+                        className: 'px-3 py-1.5 md:px-4 md:py-2 bg-white border-2 border-[#E2E8F0] hover:bg-[#FEE2E2] hover:border-[#FCA5A5] hover:text-[#DC2626] text-[#64748B] text-[10px] font-black uppercase tracking-widest rounded transition-colors'
                     }, '← Back to Shelf'),
                     createElement('div', { className: 'flex flex-col' },
                         createElement('span', { className: 'text-[10px] font-bold text-[#94A3B8] uppercase tracking-widest' }, active_level === 'elementary' ? 'Elementary' : 'High School'),
@@ -281,15 +300,21 @@ const study_vault = () => {
                 )
             ),
 
-            // Two-pane body
-            createElement('div', { className: 'flex-1 flex overflow-hidden' },
+            // Mobile sidebar overlay
+            sidebar_open && createElement('div', {
+                className: 'fixed inset-0 bg-black/20 z-30 md:hidden',
+                onClick: () => set_sidebar_open(false)
+            }),
 
-                // Left: Table of Contents (now collapsible)
+            // Two-pane body
+            createElement('div', { className: 'flex-1 flex overflow-hidden relative' },
+
+                // Left: Table of Contents (now mobile-responsive collapsible)
                 createElement('div', { 
-                    className: `flex flex-col bg-gradient-to-br from-[#F8FAFC] via-[#F1F5F9] to-[#E2E8F0] border-r-2 border-[#CBD5E1] shrink-0 p-6 relative overflow-hidden transition-all duration-300 ${
+                    className: `flex flex-col bg-gradient-to-br from-[#F8FAFC] via-[#F1F5F9] to-[#E2E8F0] border-r-2 border-[#CBD5E1] shrink-0 relative overflow-hidden transition-all duration-300 z-40 ${
                         sidebar_open 
-                            ? 'w-72 translate-x-0' 
-                            : 'w-0 -translate-x-full'
+                            ? 'w-full md:w-56 lg:w-72 translate-x-0 fixed md:relative h-full md:h-auto top-0 left-0' 
+                            : 'w-0 -translate-x-full hidden'
                     }`
                 },
                     // Background decoration
@@ -336,7 +361,8 @@ const study_vault = () => {
                         )
                     ),
                     
-                    // Enhanced topic list
+                    // Mobile-enhanced sidebar header and padding
+                    createElement('div', { className: 'p-3 md:p-4 lg:p-6' },
                     createElement('div', { className: 'flex-1 overflow-y-auto space-y-2 custom-scrollbar pr-2 pl-2 relative z-10' },
                         selected_subject.topics.map((topic, idx) =>
                             createElement('div', {
@@ -457,7 +483,7 @@ const study_vault = () => {
                                             ),
                                             // Note body
                                             current_note
-                                                ? createElement('div', { className: 'text-[16px] md:text-[17px] text-[#334155] font-medium leading-[2.0] space-y-4 pb-24' },
+                                                ? createElement('div', { className: 'text-sm sm:text-base md:text-[17px] text-[#334155] font-medium leading-relaxed md:leading-[2.0] space-y-3 md:space-y-4 pb-16 md:pb-24 px-3 sm:px-4 md:px-0' },
                                                     current_note.split('\n').map((line, i) => {
                                                         if (!line.trim()) return createElement('div', { key: i, className: 'h-2' });
                                                         
@@ -466,32 +492,137 @@ const study_vault = () => {
                                                             return createElement('hr', { key: i, className: 'border-t-2 border-[#EAE5DB] my-10' });
                                                         }
 
-                                                        // Images
+                                                        // Enhanced Responsive Images
                                                         if (line.startsWith('IMAGE:')) {
                                                             const src = line.replace('IMAGE:', '').trim();
-                                                            return createElement('div', { key: i, className: 'my-8 flex justify-center' },
-                                                                createElement('img', { src, className: 'max-w-full md:max-w-lg rounded-xl shadow-md border-4 border-white' })
+                                                            return createElement('div', { key: i, className: 'my-6 md:my-8 flex justify-center px-4 sm:px-0' },
+                                                                createElement('div', { className: 'relative w-full' },
+                                                                    createElement('img', { 
+                                                                        src, 
+                                                                        className: 'responsive-lecture-image',
+                                                                        loading: 'lazy',
+                                                                        alt: 'Educational illustration'
+                                                                    })
+                                                                )
                                                             );
                                                         }
 
-                                                        // Story Section
+                                                        // New: Enhanced Responsive Images with metadata
+                                                        if (line.startsWith('RESPONSIVE_IMAGE:')) {
+                                                            const imageName = line.replace('RESPONSIVE_IMAGE:', '').trim();
+                                                            // Import the image configs
+                                                            const imageConfigs: any = {
+                                                                'math_apples': {
+                                                                    src: '/images/math_apples.png',
+                                                                    alt: 'Mathematical representation using apples for counting',
+                                                                    caption: 'Numbers help us count things like apples'
+                                                                },
+                                                                'math_place_value': {
+                                                                    src: '/images/math_place_value.png',
+                                                                    alt: 'Place value diagram showing ones, tens, hundreds positions',
+                                                                    caption: 'Understanding place value positions'
+                                                                },
+                                                                'addition-example': {
+                                                                    src: '/images/addition-example.png',
+                                                                    alt: 'Visual example of addition with objects',
+                                                                    caption: 'Addition combines groups together'
+                                                                },
+                                                                'explantion about-addend and sum (Addition)': {
+                                                                    src: '/images/explantion about-addend and sum (Addition).png',
+                                                                    alt: 'Explanation of addends and sum in addition',
+                                                                    caption: 'Understanding addends and sum'
+                                                                },
+                                                                'example in the addition': {
+                                                                    src: '/images/example in the addition.png',
+                                                                    alt: 'Step-by-step addition example',
+                                                                    caption: 'Step-by-step addition process'
+                                                                },
+                                                                'more explantion about addition- part of addition': {
+                                                                    src: '/images/more explantion about addition- part of addition.png',
+                                                                    alt: 'Additional explanation of addition concepts',
+                                                                    caption: 'Memory tricks for addition'
+                                                                },
+                                                                'minus-part': {
+                                                                    src: '/images/minus-part.png',
+                                                                    alt: 'Subtraction concept illustration',
+                                                                    caption: 'Understanding subtraction parts'
+                                                                },
+                                                                'minus': {
+                                                                    src: '/images/minus.png',
+                                                                    alt: 'Subtraction examples and process',
+                                                                    caption: 'Subtraction in action'
+                                                                },
+                                                                'part-of-multiplication': {
+                                                                    src: '/images/part-of-multiplication.png',
+                                                                    alt: 'Multiplication concepts and terminology',
+                                                                    caption: 'Parts of multiplication'
+                                                                },
+                                                                'divide-part': {
+                                                                    src: '/images/divide-part.png',
+                                                                    alt: 'Division concepts and parts',
+                                                                    caption: 'Understanding division parts'
+                                                                },
+                                                                'long-divide': {
+                                                                    src: '/images/long-divide.png',
+                                                                    alt: 'Long division method demonstration',
+                                                                    caption: 'Long division method'
+                                                                },
+                                                                'long-divi': {
+                                                                    src: '/images/long-divi.png',
+                                                                    alt: 'Long division steps and process',
+                                                                    caption: 'Step-by-step long division'
+                                                                },
+                                                                'frac-decimal': {
+                                                                    src: '/images/frac-decimal.png',
+                                                                    alt: 'Fraction and decimal relationship',
+                                                                    caption: 'Fractions and decimals connection'
+                                                                },
+                                                                'sample': {
+                                                                    src: '/images/sample.png',
+                                                                    alt: 'Sample mathematical illustration',
+                                                                    caption: 'Mathematical example'
+                                                                }
+                                                            };
+                                                            
+                                                            const config = imageConfigs[imageName] || {
+                                                                src: `/images/${imageName}.png`,
+                                                                alt: 'Educational illustration',
+                                                                caption: ''
+                                                            };
+                                                            
+                                                            return createElement('div', { key: i, className: 'my-6 md:my-8 px-4 sm:px-0' },
+                                                                createElement('figure', { className: 'relative w-full' },
+                                                                    createElement('div', { className: 'flex justify-center mb-3' },
+                                                                        createElement('img', { 
+                                                                            src: config.src, 
+                                                                            alt: config.alt,
+                                                                            className: 'responsive-lecture-image',
+                                                                            loading: 'lazy'
+                                                                        })
+                                                                    ),
+                                                                    config.caption ? createElement('figcaption', { className: 'text-center text-xs md:text-sm text-slate-600 italic mt-2 px-2' }, config.caption) : null
+                                                                )
+                                                            );
+                                                        }
+
+                                                        // Enhanced Story Section
                                                         if (line.startsWith('STORY:')) {
-                                                            return createElement('div', { key: i, className: 'my-8 p-8 bg-white border border-[#DCD6C8] rounded-xl shadow-sm relative overflow-hidden' },
-                                                                createElement('div', { className: 'absolute top-0 left-0 w-2 h-full bg-[#3B82F6]' }),
-                                                                createElement('h4', { className: 'text-[#3B82F6] font-black uppercase tracking-widest text-xs mb-3' }, 'A Learning Story'),
-                                                                createElement('p', { className: 'text-[#1E293B] font-serif text-lg md:text-xl italic leading-relaxed' }, line.replace('STORY:', '').trim())
+                                                            return createElement('div', { key: i, className: 'my-6 md:my-8 p-4 md:p-8 bg-white border border-[#DCD6C8] rounded-lg md:rounded-xl shadow-sm relative overflow-hidden mx-2 sm:mx-0' },
+                                                                createElement('div', { className: 'absolute top-0 left-0 w-1 md:w-2 h-full bg-[#3B82F6]' }),
+                                                                createElement('h4', { className: 'text-[#3B82F6] font-black uppercase tracking-widest text-[10px] md:text-xs mb-2 md:mb-3' }, 'A Learning Story'),
+                                                                createElement('p', { className: 'text-[#1E293B] font-serif text-base md:text-lg lg:text-xl italic leading-relaxed pl-3 md:pl-0' }, line.replace('STORY:', '').trim())
                                                             );
                                                         }
 
-                                                        // Chapter Headers
+                                                        // Enhanced Chapter Headers
                                                         if (line.startsWith('UNIT') || line.startsWith('CHAPTER')) {
-                                                            return createElement('h2', { key: i, className: 'text-2xl md:text-3xl font-black font-serif text-[#0F172A] mt-12 mb-6 tracking-tight' }, line);
+                                                            return createElement('h2', { key: i, className: 'text-xl sm:text-2xl md:text-3xl font-black font-serif text-[#0F172A] mt-8 md:mt-12 mb-4 md:mb-6 tracking-tight px-2 sm:px-0' }, line);
                                                         }
 
-                                                        // Lesson Headers
+                                                        // Enhanced Lesson Headers
                                                         if (line.startsWith('LESSON')) {
-                                                            return createElement('div', { key: i, className: 'mt-10 mb-4 flex items-center' },
-                                                                createElement('h3', { className: 'text-lg font-black text-[#1E293B] tracking-wider uppercase' }, line)
+                                                            return createElement('div', { key: i, className: 'mt-6 md:mt-10 mb-3 md:mb-4 flex items-center px-2 sm:px-0' },
+                                                                createElement('h3', { className: 'text-base md:text-lg font-black text-[#1E293B] tracking-wider uppercase' }, line)
                                                             );
                                                         }
 
@@ -501,30 +632,30 @@ const study_vault = () => {
                                                             return createElement(InteractiveQuiz, { key: i, question: q.replace('Q:', '').trim(), answer: a.trim() });
                                                         }
 
-                                                        // Vocabulary words or bold beginnings (Word — Meaning)
+                                                        // Enhanced Vocabulary words or bold beginnings (Word — Meaning)
                                                         if (line.includes(' — ') && !line.startsWith(' ') && !line.startsWith('•')) {
                                                             const [word, ...rest] = line.split(' — ');
-                                                            return createElement('div', { key: i, className: 'pl-4 border-l-4 border-[#CBD5E1] my-3' }, 
-                                                                createElement('span', { className: 'font-black text-[#0F172A] text-lg mr-2' }, word),
-                                                                createElement('span', { className: 'text-[#475569]' }, '— ' + rest.join(' — '))
+                                                            return createElement('div', { key: i, className: 'pl-3 md:pl-4 border-l-4 border-[#CBD5E1] my-2 md:my-3 mx-2 sm:mx-0' }, 
+                                                                createElement('span', { className: 'font-black text-[#0F172A] text-base md:text-lg mr-2' }, word),
+                                                                createElement('span', { className: 'text-[#475569] text-sm md:text-base' }, '— ' + rest.join(' — '))
                                                             );
                                                         }
 
-                                                        // List items (bullets, arrows)
+                                                        // Enhanced List items (bullets, arrows)
                                                         if (line.trim().startsWith('•') || line.trim().startsWith('→')) {
-                                                            return createElement('div', { key: i, className: 'pl-8 relative flex items-start' },
-                                                                createElement('span', { className: 'absolute left-2 text-[#94A3B8] font-black' }, line.trim().charAt(0)),
-                                                                createElement('span', { className: 'text-[#334155]' }, line.trim().substring(1).trim())
+                                                            return createElement('div', { key: i, className: 'pl-6 md:pl-8 relative flex items-start my-1 md:my-2 mx-2 sm:mx-0' },
+                                                                createElement('span', { className: 'absolute left-1 md:left-2 text-[#94A3B8] font-black text-sm md:text-base' }, line.trim().charAt(0)),
+                                                                createElement('span', { className: 'text-[#334155] text-sm md:text-base leading-relaxed ml-4 md:ml-6' }, line.trim().substring(1).trim())
                                                             );
                                                         }
 
-                                                        // Sub-headers (All caps lines)
+                                                        // Enhanced Sub-headers (All caps lines)
                                                         if (line === line.toUpperCase() && line.length > 5 && !line.includes('=')) {
-                                                            return createElement('h4', { key: i, className: 'text-[11px] font-black text-[#64748B] tracking-[0.25em] mt-8 mb-2 border-b border-[#EAE5DB] pb-1' }, line);
+                                                            return createElement('h4', { key: i, className: 'text-[10px] md:text-[11px] font-black text-[#64748B] tracking-[0.25em] mt-6 md:mt-8 mb-1 md:mb-2 border-b border-[#EAE5DB] pb-1 px-2 sm:px-0' }, line);
                                                         }
 
-                                                        // Regular text
-                                                        return createElement('p', { key: i, className: 'text-[#334155] max-w-4xl' }, line);
+                                                        // Enhanced Regular text
+                                                        return createElement('p', { key: i, className: 'text-[#334155] max-w-4xl text-sm md:text-base leading-relaxed px-2 sm:px-0' }, line);
                                                     })
                                                 )
                                                 : createElement('div', { className: 'p-10 bg-white/50 backdrop-blur-sm rounded-2xl border border-[#DCD6C8] text-center shadow-sm max-w-2xl' },
